@@ -1,18 +1,15 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.base.Objects;
 import com.google.common.collect.Range;
-import org.openrdf.model.Value;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.complexible.common.rdf.model.Values.literal;
 
 public final class WeightedLevenshteinDistance extends AbstractFunction implements StringFunction {
 
@@ -30,7 +27,7 @@ public final class WeightedLevenshteinDistance extends AbstractFunction implemen
         return new WeightedLevenshteinDistance(this);
     }
 
-    private info.debatty.java.stringsimilarity.WeightedLevenshtein getWeightedLevenshteinFunction(Value... values) {
+    private info.debatty.java.stringsimilarity.WeightedLevenshtein getWeightedLevenshteinFunction(ValueOrError... values) {
         if(weightedLevenshtein == null) {
             Map<SubstitutionPair, Double> characterSubstitutionMap = new HashMap<>();
 
@@ -65,13 +62,13 @@ public final class WeightedLevenshteinDistance extends AbstractFunction implemen
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected ValueOrError internalEvaluate(final ValueOrError... values) {
 
         assertStringLiteral(values[0]);
         assertStringLiteral(values[1]);
 
         if ((values.length - 2) % 3 != 0) {
-            throw new ExpressionEvaluationException("Incorrect parameter count");
+            return ValueOrError.Error;
         }
 
         for (int i = 2; i < values.length; i += 3) {

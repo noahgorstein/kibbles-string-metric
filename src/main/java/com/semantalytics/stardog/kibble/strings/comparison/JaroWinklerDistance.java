@@ -1,14 +1,11 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
-import org.openrdf.model.Value;
-
-import static com.complexible.common.rdf.model.Values.literal;
 
 public final class JaroWinklerDistance extends AbstractFunction implements StringFunction {
 
@@ -22,7 +19,7 @@ public final class JaroWinklerDistance extends AbstractFunction implements Strin
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected ValueOrError internalEvaluate(final ValueOrError... values) {
 
         final String firstString = assertStringLiteral(values[0]).stringValue();
         final String secondString = assertStringLiteral(values[1]).stringValue();
@@ -44,7 +41,7 @@ public final class JaroWinklerDistance extends AbstractFunction implements Strin
         final org.simmetrics.metrics.JaroWinkler jaroWinkler;
         jaroWinkler = new org.simmetrics.metrics.JaroWinkler(boostThreshold, prefixScale, maxPrefixLength);
 
-        return literal(jaroWinkler.distance(firstString, secondString));
+        return ValueOrError.Float.of(jaroWinkler.distance(firstString, secondString));
     }
 
     public Function copy() {

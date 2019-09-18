@@ -1,7 +1,6 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.complexible.stardog.plan.filter.Expression;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.expr.Constant;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
@@ -11,8 +10,6 @@ import com.google.common.collect.Range;
 import org.openrdf.model.Value;
 import org.simmetrics.metrics.functions.AffineGap;
 import org.simmetrics.metrics.functions.MatchMismatch;
-
-import static com.complexible.common.rdf.model.Values.literal;
 
 public final class SmithWaterman extends AbstractFunction implements StringFunction {
 

@@ -6,7 +6,6 @@ import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.openrdf.model.Value;
 
 import static com.google.common.base.Preconditions.checkArgument;
 

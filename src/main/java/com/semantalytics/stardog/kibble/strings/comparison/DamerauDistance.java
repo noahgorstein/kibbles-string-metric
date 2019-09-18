@@ -1,13 +1,9 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.openrdf.model.Value;
-
-import static com.complexible.common.rdf.model.Values.literal;
 
 public final class DamerauDistance extends AbstractFunction implements StringFunction {
 
@@ -26,7 +22,7 @@ public final class DamerauDistance extends AbstractFunction implements StringFun
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected Value internalEvaluate(final Value... values) {
 
         final String string1 = assertStringLiteral(values[0]).stringValue();
         final String string2 = assertStringLiteral(values[1]).stringValue();
