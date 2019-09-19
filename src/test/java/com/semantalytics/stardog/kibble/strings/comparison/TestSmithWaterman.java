@@ -1,11 +1,10 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
 import org.junit.*;
-import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -17,7 +16,7 @@ public class TestSmithWaterman extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:smithWaterman(\"Stardog\", \"Starman\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -39,7 +38,7 @@ public class TestSmithWaterman extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:smithWaterman(\"Stardog\", \"Starman\", -5.0, -1.0, 5.0, -3.0, " + Integer.MAX_VALUE + ") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
             final Value aValue = aResult.next().getValue("result");
@@ -60,7 +59,7 @@ public class TestSmithWaterman extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:smithWaterman(\"Stardog\", \"Starman\", 1.0) as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -78,7 +77,7 @@ public class TestSmithWaterman extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:smithWaterman(7) as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 

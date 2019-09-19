@@ -2,24 +2,17 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.expr.Constant;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
-import org.openrdf.model.Value;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 
 public final class NGram extends AbstractFunction implements StringFunction {
 
     private info.debatty.java.stringsimilarity.NGram nGram;
-
-    {
-        if (getArgs().size() == 3 && getArgs().get(2) instanceof Constant) {
-            final int n = Integer.parseInt(((Constant) getArgs().get(2)).getValue().stringValue());
-            nGram = new info.debatty.java.stringsimilarity.NGram(n);
-        } else {
-            nGram = new info.debatty.java.stringsimilarity.NGram();
-        }
-    }
 
     protected NGram() {
         super(Range.closed(2, 3), StringMetricVocabulary.ngram.stringValue());
@@ -30,15 +23,29 @@ public final class NGram extends AbstractFunction implements StringFunction {
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        assertStringLiteral(values[0]);
-        assertStringLiteral(values[1]);
-        if(values.length == 3) {
-            assertNumericLiteral(values[2]);
+        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
+
+            final String string1 = ((Literal)values[0]).label();
+            final String string2 = ((Literal)values[1]).label();
+
+            if (values.length == 3 && assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
+
+                final int n = Integer.parseInt(((Constant) getArgs().get(2)).getValue().stringValue());
+                if(nGram == null) {
+                    nGram = new info.debatty.java.stringsimilarity.NGram(n);
+                }
+            } else {
+                if(nGram == null) {
+                    nGram = new info.debatty.java.stringsimilarity.NGram();
+                }
+            }
+
+            return ValueOrError.Double.of(nGram.distance(string1, string2));
+        } else {
+            return ValueOrError.Error;
         }
-
-        return literal(nGram.distance(values[0].stringValue(), values[1].stringValue()));
     }
 
     public Function copy() {

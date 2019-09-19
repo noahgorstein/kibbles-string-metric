@@ -2,11 +2,13 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.expr.Constant;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
-import org.openrdf.model.Value;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 
 public class SorensenDiceSimilarity extends AbstractFunction implements StringFunction {
 
@@ -21,35 +23,38 @@ public class SorensenDiceSimilarity extends AbstractFunction implements StringFu
         this.sorensenDice = sorensenDiceSimilarity.sorensenDice;
     }
 
-    private info.debatty.java.stringsimilarity.SorensenDice getSorensenDiceFunction(final Value... values) throws ExpressionEvaluationException {
-        if(sorensenDice == null) {
-            if (values.length == 3) {
-                 if(!(getThirdArg() instanceof Constant)) {
-                    throw new ExpressionEvaluationException("Parameter must be a constant expression");
-                 }
-                
-                final int n = assertNumericLiteral(values[2]).intValue();
-                sorensenDice = new info.debatty.java.stringsimilarity.SorensenDice(n);
-            } else {
-                sorensenDice = new info.debatty.java.stringsimilarity.SorensenDice();
-            }
-        }
-        return sorensenDice;
-    }
-
-
     @Override
     public void initialize() {
         sorensenDice = null;
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        final String firstString = assertStringLiteral(values[0]).stringValue();
-        final String secondString = assertStringLiteral(values[1]).stringValue();
+        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
+            final String firstString = ((Literal)values[0]).label();
+            final String secondString = ((Literal)values[1]).label();
 
-        return literal(getSorensenDiceFunction(values).similarity(firstString, secondString));
+            if(sorensenDice == null) {
+                if (values.length == 3) {
+                    if(!(getThirdArg() instanceof Constant)) {
+                        return ValueOrError.Error;
+                    }
+
+                    if(assertNumericLiteral(values[2])) {
+                        final int n = Literal.intValue((Literal)values[2]);
+                        sorensenDice = new info.debatty.java.stringsimilarity.SorensenDice(n);
+                    } else {
+                        return ValueOrError.Error;
+                    }
+                } else {
+                    sorensenDice = new info.debatty.java.stringsimilarity.SorensenDice();
+                }
+            }
+            return ValueOrError.Double.of(sorensenDice.similarity(firstString, secondString));
+        } else {
+            return ValueOrError.Error;
+        }
     }
 
     public Function copy() {

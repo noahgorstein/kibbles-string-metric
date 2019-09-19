@@ -1,9 +1,13 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.openrdf.model.Value;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
+
+import static org.simmetrics.metrics.StringMetrics.*;
 
 public final class OverlapCoefficient extends AbstractFunction implements StringFunction {
 
@@ -16,12 +20,17 @@ public final class OverlapCoefficient extends AbstractFunction implements String
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        final String firstString = assertStringLiteral(values[0]).stringValue();
-        final String secondString = assertStringLiteral(values[1]).stringValue();
+        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
 
-        return literal(StringMetrics.overlapCoefficient().compare(firstString, secondString));
+            final String firstString = ((Literal)values[0]).label();
+            final String secondString = ((Literal)values[1]).label();
+
+            return ValueOrError.Float.of(overlapCoefficient().compare(firstString, secondString));
+        } else {
+            return ValueOrError.Error;
+        }
     }
 
     @Override

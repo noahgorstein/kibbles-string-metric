@@ -7,6 +7,8 @@ import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.base.Objects;
 import com.google.common.collect.Range;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,57 +29,58 @@ public final class WeightedLevenshteinDistance extends AbstractFunction implemen
         return new WeightedLevenshteinDistance(this);
     }
 
-    private info.debatty.java.stringsimilarity.WeightedLevenshtein getWeightedLevenshteinFunction(ValueOrError... values) {
-        if(weightedLevenshtein == null) {
-            Map<SubstitutionPair, Double> characterSubstitutionMap = new HashMap<>();
-
-            for (int i = 2; i < values.length; i += 3) {
-
-                final Character character1 = values[i].stringValue().charAt(0);
-                final Character character2 = values[i + 1].stringValue().charAt(0);
-                final SubstitutionPair substitutionPair = new SubstitutionPair(character1, character2);
-                final Double weight = Double.parseDouble(values[i + 2].stringValue());
-
-                characterSubstitutionMap.put(substitutionPair, weight);
-            }
-
-            weightedLevenshtein = new info.debatty.java.stringsimilarity.WeightedLevenshtein(
-                    (char c1, char c2) -> {
-                        SubstitutionPair substitutionPair = new SubstitutionPair(c1, c2);
-                        if (characterSubstitutionMap.containsKey(substitutionPair)) {
-                            return characterSubstitutionMap.get(substitutionPair);
-                        } else {
-                            return 1.0;
-                        }
-                    }
-            );
-
-        }
-        return weightedLevenshtein;
-    }
-
     @Override
     public void initialize() {
         weightedLevenshtein = null;
     }
 
     @Override
-    protected ValueOrError internalEvaluate(final ValueOrError... values) {
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        assertStringLiteral(values[0]);
-        assertStringLiteral(values[1]);
+        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
 
-        if ((values.length - 2) % 3 != 0) {
+            final String string1 = ((Literal)values[0]).label();
+            final String string2 = ((Literal)values[1]).label();
+
+            if ((values.length - 2) % 3 != 0) {
+                return ValueOrError.Error;
+            }
+
+            for (int i = 2; i < values.length; i += 3) {
+                if(!assertStringLiteral(values[i]) || !assertStringLiteral(values[i + 1]) || !assertNumericLiteral(values[i + 2])) {
+                    return ValueOrError.Error;
+                }
+            }
+            if(weightedLevenshtein == null) {
+                Map<SubstitutionPair, Double> characterSubstitutionMap = new HashMap<>();
+
+                for (int i = 2; i < values.length; i += 3) {
+
+                    final Character character1 = ((Literal)values[i]).label().charAt(0);
+                    final Character character2 = ((Literal)values[i + 1]).label().charAt(0);
+                    final SubstitutionPair substitutionPair = new SubstitutionPair(character1, character2);
+                    final Double weight = Literal.doubleValue((Literal)values[i + 2]);
+
+                    characterSubstitutionMap.put(substitutionPair, weight);
+                }
+
+                weightedLevenshtein = new info.debatty.java.stringsimilarity.WeightedLevenshtein(
+                        (char c1, char c2) -> {
+                            SubstitutionPair substitutionPair = new SubstitutionPair(c1, c2);
+                            if (characterSubstitutionMap.containsKey(substitutionPair)) {
+                                return characterSubstitutionMap.get(substitutionPair);
+                            } else {
+                                return 1.0;
+                            }
+                        }
+                );
+
+            }
+
+            return ValueOrError.Double.of(weightedLevenshtein.distance(string1, string2));
+        } else {
             return ValueOrError.Error;
         }
-
-        for (int i = 2; i < values.length; i += 3) {
-            assertStringLiteral(values[i]);
-            assertStringLiteral(values[i + 1]);
-            assertNumericLiteral(values[i + 2]);
-        }
-
-        return literal(getWeightedLevenshteinFunction(values).distance(values[0].stringValue(), values[1].stringValue()));
     }
 
     public void accept(final ExpressionVisitor expressionVisitor) {

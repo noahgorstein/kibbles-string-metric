@@ -1,7 +1,7 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
-import com.complexible.common.rdf.model.StardogValueFactory;
-import org.openrdf.model.IRI;
+import com.stardog.stark.IRI;
+import com.stardog.stark.Values;
 
 public enum StringMetricVocabulary {
 
@@ -33,7 +33,7 @@ public enum StringMetricVocabulary {
     public final IRI iri;
 
     StringMetricVocabulary() {
-        iri = StardogValueFactory.instance().createIRI(NAMESPACE, name());
+        iri = Values.iri(NAMESPACE, name());
     }
 
     public static String sparqlPrefix(String prefixName) {
@@ -41,6 +41,6 @@ public enum StringMetricVocabulary {
     }
 
     public String stringValue() {
-        return iri.stringValue();
+        return iri.toString();
     }
 }

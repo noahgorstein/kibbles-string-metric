@@ -2,8 +2,7 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -15,7 +14,7 @@ public class TestDamerauDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:damerauDistance(\"ABCDEF\", \"BACDFE\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -32,7 +31,7 @@ public class TestDamerauDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:damerauDistance(\"one\", \"two\", \"three\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -49,7 +48,7 @@ public class TestDamerauDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:damerauDistance(\"one\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -66,7 +65,7 @@ public class TestDamerauDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:damerauDistance(7, \"Stardog\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -83,7 +82,7 @@ public class TestDamerauDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:damerauDistance(\"Stardog\", 7) as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 

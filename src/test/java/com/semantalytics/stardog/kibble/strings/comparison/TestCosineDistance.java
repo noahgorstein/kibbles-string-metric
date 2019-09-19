@@ -1,11 +1,19 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
+import com.stardog.stark.query.Binding;
+import com.stardog.stark.query.BindingSet;
+import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
 
-import static org.junit.Assert.*;
+import java.util.Optional;
+
+import static com.complexible.stardog.plan.filter.functions.AbstractFunction.assertLiteral;
+import static com.complexible.stardog.plan.filter.functions.AbstractFunction.assertStringLiteral;
+import static org.assertj.core.api.Assertions.withPrecision;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class TestCosineDistance extends AbstractStardogTest {
 
@@ -15,14 +23,14 @@ public class TestCosineDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:cosineDistance(\"ABC\", \"ABCE\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
-            final String aValue = aResult.next().getValue("result").stringValue();
-
-            assertEquals(0.29289, Double.parseDouble(aValue), 0.0001);
-            assertFalse("Should have no more results", aResult.hasNext());
+            final Value aValue = aResult.next().get("result");
+            assertThat(assertLiteral(aValue)).isTrue();
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.29289);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -32,14 +40,14 @@ public class TestCosineDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:cosineDistance(\"ABC\", \"ABCE\", 3) as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
-            final String aValue = aResult.next().getValue("result").stringValue();
+            final BindingSet aValue = aResult.next();
 
-            assertEquals(0.29289, Double.parseDouble(aValue), 0.0001);
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aValue).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -49,9 +57,9 @@ public class TestCosineDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:cosineDistance(\"one\", \"two\", \"three\", \"four\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
             final BindingSet aBindingSet = aResult.next();
 
@@ -66,9 +74,9 @@ public class TestCosineDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:cosineDistance(7) as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
             final BindingSet aBindingSet = aResult.next();
 
@@ -83,9 +91,9 @@ public class TestCosineDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:cosineDistance(\"Stardog\", 2) as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
             final BindingSet aBindingSet = aResult.next();
 
@@ -100,7 +108,7 @@ public class TestCosineDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:cosineDistance(\"Stardog\", \"Starlight\", \"Starship\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -117,7 +125,7 @@ public class TestCosineDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:cosineDistance(\"Stardog\", \"Starlight\", ?thirdArg) as ?result) }";
 
-        try (final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try (final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 

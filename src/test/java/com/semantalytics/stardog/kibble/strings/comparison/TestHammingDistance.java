@@ -2,8 +2,7 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -15,7 +14,7 @@ public class TestHammingDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?hammingDistance where { bind(stringmetric:hammingDistance(\"Stardog\", \"Starman\") as ?hammingDistance) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -32,7 +31,7 @@ public class TestHammingDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?hammingDistance where { bind(stringmetric:hammingDistance(\"one\", \"two\", \"three\", \"four\") as ?hammingDistance) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -49,7 +48,7 @@ public class TestHammingDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?hammingDistance where { bind(stringmetric:hammingDistance(7) as ?hammingDistance) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 

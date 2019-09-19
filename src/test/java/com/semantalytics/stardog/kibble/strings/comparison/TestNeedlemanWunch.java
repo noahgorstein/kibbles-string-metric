@@ -2,8 +2,7 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -14,7 +13,7 @@ public class TestNeedlemanWunch extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?dist where { bind(stringmetric:needlemanWunch(\"Stardog\", \"Starman\") as ?dist) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
@@ -31,7 +30,7 @@ public class TestNeedlemanWunch extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?dist where { bind(stringmetric:needlemanWunch(\"one\", \"two\", \"three\", \"four\", \"five\", \"six\") as ?dist) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();
@@ -47,7 +46,7 @@ public class TestNeedlemanWunch extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?dist where { bind(stringmetric:needlemanWunch(7) as ?dist) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 

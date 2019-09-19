@@ -1,11 +1,10 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
 import org.junit.*;
-import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -17,7 +16,7 @@ public class TestSorensenDiceSimilarity extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:sorensenDiceSimilarity(\"ABCDE\", \"ABCDFG\", 2) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+            try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 
@@ -38,7 +37,7 @@ public class TestSorensenDiceSimilarity extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:sorensenDiceSimilarity(\"one\", \"two\", \"three\", \"four\") as ?str) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+            try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 
@@ -55,7 +54,7 @@ public class TestSorensenDiceSimilarity extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:sorensenDiceSimilarity(\"one\") as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+            try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 

@@ -3,8 +3,7 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 import com.complexible.stardog.api.Connection;
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +15,7 @@ public class TestLongestCommonSubsequence extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:longestCommonSubsequence(\"AGCAT\", \"GAC\") as ?result) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
@@ -33,7 +32,7 @@ public class TestLongestCommonSubsequence extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:longestCommonSubsequence(\"one\", \"two\", \"three\") as ?result) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();
@@ -49,7 +48,7 @@ public class TestLongestCommonSubsequence extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:longestCommonSubsequence(7) as ?result) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();

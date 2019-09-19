@@ -33,13 +33,23 @@ public final class JaroWinklerSimilarity extends AbstractFunction implements Str
             int maxPrefixLength = 4;
 
             if (values.length >= 3) {
-                boostThreshold = assertNumericLiteral(values[2]).floatValue();
+                if(assertNumericLiteral(values[2])) {
+                    boostThreshold = Literal.floatValue((Literal)values[2]);
+                } else {
+                    return ValueOrError.Error;
+                }
             }
             if (values.length >= 4) {
-                prefixScale = assertNumericLiteral(values[3]).floatValue();
+                if(assertNumericLiteral(values[3])) {
+                    prefixScale = Literal.floatValue((Literal)values[3]);
+                } else {
+                    return ValueOrError.Error;
+                }
             }
             if (values.length == 5) {
-                maxPrefixLength = assertNumericLiteral(values[4]).intValue();
+                if(assertNumericLiteral(values[4])) {
+                    maxPrefixLength = Literal.intValue((Literal)values[4]);
+                }
             }
 
             final org.simmetrics.metrics.JaroWinkler jaroWinkler;

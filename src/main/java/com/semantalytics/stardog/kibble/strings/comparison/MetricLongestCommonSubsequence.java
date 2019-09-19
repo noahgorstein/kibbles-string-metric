@@ -1,11 +1,13 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 import info.debatty.java.stringsimilarity.MetricLCS;
-import org.openrdf.model.Value;
 
 public class MetricLongestCommonSubsequence extends AbstractFunction implements StringFunction {
 
@@ -20,12 +22,16 @@ public class MetricLongestCommonSubsequence extends AbstractFunction implements 
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        assertStringLiteral(values[0]);
-        assertStringLiteral(values[1]);
+        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
+            final String string1 = ((Literal)values[0]).label();
+            final String string2 = ((Literal)values[1]).label();
 
-        return literal(metricLCS.distance(values[0].stringValue(), values[1].stringValue()));
+            return ValueOrError.Double.of(metricLCS.distance(string1, string2));
+        } else {
+            return ValueOrError.Error;
+        }
     }
 
     public Function copy() {

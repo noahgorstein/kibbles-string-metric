@@ -1,11 +1,10 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
 import org.junit.*;
-import org.openrdf.model.Literal;
 import org.openrdf.model.Value;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -17,7 +16,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"This is the first string\", \"And this is another string\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -38,7 +37,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"This is the first string\", \"And this is another string\", 5) as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -59,7 +58,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"one\", \"two\", \"three\", \"four\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -76,7 +75,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(7) as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -93,7 +92,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"Stardog\", 2) as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -110,7 +109,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"Stardog\", \"Starlight\", \"Starship\") as ?result) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -127,7 +126,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:sift4(\"Stardog\", \"Starlight\", ?thirdArg) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+            try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 

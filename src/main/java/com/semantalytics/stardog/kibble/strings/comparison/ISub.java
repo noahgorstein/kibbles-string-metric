@@ -3,10 +3,13 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 import com.complexible.stardog.plan.filter.EvalUtil;
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.expr.Constant;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 import org.ivml.alimo.I_Sub;
 
 public final class ISub extends AbstractFunction implements StringFunction {
@@ -32,20 +35,24 @@ public final class ISub extends AbstractFunction implements StringFunction {
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
-        final String firstString = assertLiteral(values[0]).stringValue();
-        final String secondString = assertLiteral(values[1]).stringValue();
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        boolean normalizeStrings = false;
+        if(assertLiteral(values[0]) && assertLiteral(values[1])) {
 
-        if(values.length == 3) {
-            if(!(getThirdArg() instanceof Constant)) {
-                throw new ExpressionEvaluationException("Parameter must be a constant expression");
+            final String firstString = ((Literal) values[0]).label();
+            final String secondString = ((Literal) values[1]).label();
+
+            boolean normalizeStrings = false;
+
+            if (values.length == 3 && (values[2] instanceof Constant && assertLiteral(values[2])) && EvalUtil.booleanValue(((Literal) values[2]).label()).isPresent()) {
+                normalizeStrings = EvalUtil.booleanValue(((Literal) values[2]).label()).get();
+                return ValueOrError.Double.of(iSub.score(firstString, secondString, normalizeStrings));
+            } else {
+                return ValueOrError.Double.of(iSub.score(firstString, secondString, false));
             }
-            normalizeStrings = EvalUtil.toBoolean(values[2].stringValue());
+        } else {
+            return ValueOrError.Error;
         }
-
-        return Values.literal(iSub.score(firstString, secondString, normalizeStrings));
     }
 
     @Override

@@ -1,9 +1,12 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 
 public final class DamerauDistance extends AbstractFunction implements StringFunction {
 
@@ -22,12 +25,16 @@ public final class DamerauDistance extends AbstractFunction implements StringFun
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) {
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        final String string1 = assertStringLiteral(values[0]).stringValue();
-        final String string2 = assertStringLiteral(values[1]).stringValue();
+        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
+            final String string1 = ((Literal)values[0]).label();
+            final String string2 = ((Literal)values[1]).label();
 
-        return literal(damerau.distance(string1, string2));
+            return ValueOrError.Double.of(damerau.distance(string1, string2));
+        } else {
+            return ValueOrError.Error;
+        }
     }
 
     public Function copy() {

@@ -1,10 +1,12 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
-import org.openrdf.model.Value;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 
 public final class LongestCommonSubstring extends AbstractFunction implements StringFunction {
 
@@ -23,12 +25,17 @@ public final class LongestCommonSubstring extends AbstractFunction implements St
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        assertStringLiteral(values[0]);
-        assertStringLiteral(values[1]);
+        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
 
-        return literal(longestCommonSubstring.compare(values[0].toString(), values[1].toString()));
+            final String string1 = ((Literal)values[0]).label();
+            final String string2 = ((Literal)values[1]).label();
+
+            return ValueOrError.Float.of(longestCommonSubstring.compare(string1, string2));
+        } else {
+            return ValueOrError.Error;
+        }
     }
 
     public Function copy() {

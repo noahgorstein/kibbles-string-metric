@@ -1,11 +1,12 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
-import com.complexible.common.rdf.model.Values;
-import com.complexible.stardog.plan.filter.ExpressionEvaluationException;
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
+import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
@@ -20,16 +21,21 @@ public final class HammingDistance extends AbstractFunction implements StringFun
     }
 
     @Override
-    protected Value internalEvaluate(final Value... values) throws ExpressionEvaluationException {
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        final String string1 = assertStringLiteral(values[0]).stringValue();
-        final String string2 = assertStringLiteral(values[1]).stringValue();
-        
-        if(string1.length() != string2.length()) {
-            throw new ExpressionEvaluationException("Argument lengths must be equal");
+        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
+            final String string1 = ((Literal)values[0]).label();
+            final String string2 = ((Literal)values[1]).label();
+
+            if(string1.length() != string2.length()) {
+                return ValueOrError.Error;
+            }
+
+            return ValueOrError.Double.of(distance(string1, string2));
+
+        } else {
+            return ValueOrError.Error;
         }
-
-        return Values.literal(distance(string1, string2));
     }
 
     private double distance(final String a, final String b) {

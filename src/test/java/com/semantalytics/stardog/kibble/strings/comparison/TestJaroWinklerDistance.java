@@ -2,8 +2,7 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -15,7 +14,7 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = "prefix stringmetric: <" + StringMetricVocabulary.NAMESPACE + "> " +
                 "select ?dist where { bind(stringmetric:jaroWinklerDistance(\"My string\", \"My tsring\") as ?dist) }";
 
-        try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+        try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -32,7 +31,7 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?distance where { bind(stringmetric:jaroWinklerDistance(\"My string\", \"My tsring\", 0.1) as ?distance) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
@@ -49,7 +48,7 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?distance where { bind(stringmetric:jaroWinklerDistance(\"My string\", \"My tsring\", \"x\") as ?distance) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
@@ -66,7 +65,7 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:jaroWinklerDistance(\"one\", \"two\", 0.7, \"four\") as ?str) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
@@ -82,7 +81,7 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:jaroWinklerDistance(7) as ?str) }";
 
-        final TupleQueryResult aResult = connection.select(aQuery).execute();
+        final QueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 

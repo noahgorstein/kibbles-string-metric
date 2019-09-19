@@ -2,8 +2,7 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import org.junit.*;
-import org.openrdf.query.BindingSet;
-import org.openrdf.query.TupleQueryResult;
+import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +15,7 @@ public class TestMongeElkan extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:cosineDistance(\"ABC\", \"ABCE\") as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+            try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 
@@ -34,7 +33,7 @@ public class TestMongeElkan extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:cosineDistance(\"ABC\", \"ABCE\", 3) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+            try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 
@@ -52,7 +51,7 @@ public class TestMongeElkan extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:cosineDistance(\"one\", \"two\", \"three\", \"four\") as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+            try(final QueryResult aResult = connection.select(aQuery).execute()) {
                 assertTrue("Should have a result", aResult.hasNext());
 
                 final BindingSet aBindingSet = aResult.next();
@@ -69,7 +68,7 @@ public class TestMongeElkan extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:cosineDistance(7) as ?result) }";
 
-            final TupleQueryResult aResult = connection.select(aQuery).execute();
+            final QueryResult aResult = connection.select(aQuery).execute();
             try {
                 assertTrue("Should have a result", aResult.hasNext());
 
@@ -90,7 +89,7 @@ public class TestMongeElkan extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:cosineDistance(\"Stardog\", 2) as ?result) }";
 
-            final TupleQueryResult aResult = connection.select(aQuery).execute();
+            final QueryResult aResult = connection.select(aQuery).execute();
             try {
                 assertTrue("Should have a result", aResult.hasNext());
 
@@ -111,7 +110,7 @@ public class TestMongeElkan extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:cosineDistance(\"Stardog\", \"Starlight\", \"Starship\") as ?result) }";
 
-            final TupleQueryResult aResult = connection.select(aQuery).execute();
+            final QueryResult aResult = connection.select(aQuery).execute();
             try {
                 assertTrue("Should have a result", aResult.hasNext());
 
@@ -132,7 +131,7 @@ public class TestMongeElkan extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:cosineDistance(\"Stardog\", \"Starlight\", ?thirdArg) as ?result) }";
 
-            try(final TupleQueryResult aResult = connection.select(aQuery).execute()) {
+            try(final QueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 

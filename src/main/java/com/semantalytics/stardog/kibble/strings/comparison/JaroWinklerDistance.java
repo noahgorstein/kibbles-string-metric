@@ -6,9 +6,10 @@ import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
 import com.complexible.stardog.plan.filter.functions.string.StringFunction;
 import com.google.common.collect.Range;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 
 public final class JaroWinklerDistance extends AbstractFunction implements StringFunction {
-
 
     protected JaroWinklerDistance() {
         super(Range.closed(2, 5), StringMetricVocabulary.jaroWinklerDistance.stringValue());
@@ -19,29 +20,46 @@ public final class JaroWinklerDistance extends AbstractFunction implements Strin
     }
 
     @Override
-    protected ValueOrError internalEvaluate(final ValueOrError... values) {
+    protected ValueOrError internalEvaluate(final Value... values) {
 
-        final String firstString = assertStringLiteral(values[0]).stringValue();
-        final String secondString = assertStringLiteral(values[1]).stringValue();
+        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
 
-        float boostThreshold = 0.7f;
-        float prefixScale = 0.1f;
-        int maxPrefixLength = 4;
+            final String firstString = ((Literal)values[0]).label();
+            final String secondString = ((Literal)values[1]).label();
 
-        if(values.length >= 3) {
-            boostThreshold = assertNumericLiteral(values[2]).floatValue();
+            float boostThreshold = 0.7f;
+            float prefixScale = 0.1f;
+            int maxPrefixLength = 4;
+
+            if(values.length >= 3) {
+                if(assertNumericLiteral(values[2])) {
+                    boostThreshold = Literal.floatValue((Literal)values[2]);
+                } else {
+                    return ValueOrError.Error;
+                }
+            }
+            if(values.length >= 4) {
+                if(assertNumericLiteral(values[3])) {
+                    prefixScale = Literal.floatValue((Literal)values[3]);
+                } else {
+                    return ValueOrError.Error;
+                }
+            }
+            if(values.length == 5) {
+                if(assertNumericLiteral(values[4])) {
+                    maxPrefixLength = Literal.intValue((Literal)values[4]);
+                } else {
+                    return ValueOrError.Error;
+                }
+            }
+
+            final org.simmetrics.metrics.JaroWinkler jaroWinkler;
+            jaroWinkler = new org.simmetrics.metrics.JaroWinkler(boostThreshold, prefixScale, maxPrefixLength);
+
+            return ValueOrError.Float.of(jaroWinkler.distance(firstString, secondString));
+        } else {
+            return ValueOrError.Error;
         }
-        if(values.length >= 4) {
-            prefixScale = assertNumericLiteral(values[3]).floatValue();
-        }
-        if(values.length == 5) {
-            maxPrefixLength = assertNumericLiteral(values[4]).intValue();
-        }
-
-        final org.simmetrics.metrics.JaroWinkler jaroWinkler;
-        jaroWinkler = new org.simmetrics.metrics.JaroWinkler(boostThreshold, prefixScale, maxPrefixLength);
-
-        return ValueOrError.Float.of(jaroWinkler.distance(firstString, secondString));
     }
 
     public Function copy() {
