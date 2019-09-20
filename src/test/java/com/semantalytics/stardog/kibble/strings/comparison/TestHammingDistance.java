@@ -1,10 +1,13 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
+import com.stardog.stark.query.BindingSet;
+import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
-import org.openrdf.query.QueryResult;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class TestHammingDistance extends AbstractStardogTest {
 
@@ -14,14 +17,14 @@ public class TestHammingDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?hammingDistance where { bind(stringmetric:hammingDistance(\"Stardog\", \"Starman\") as ?hammingDistance) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+            try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
-            final String aValue = aResult.next().getValue("hammingDistance").stringValue();
+            final Value aValue = aResult.next().value("hammingDistance").get();
 
-            assertEquals(3.0, Double.parseDouble(aValue), 0.0001);
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(3.0);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -31,14 +34,14 @@ public class TestHammingDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?hammingDistance where { bind(stringmetric:hammingDistance(\"one\", \"two\", \"three\", \"four\") as ?hammingDistance) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+            try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -48,14 +51,14 @@ public class TestHammingDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?hammingDistance where { bind(stringmetric:hammingDistance(7) as ?hammingDistance) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+            try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 }

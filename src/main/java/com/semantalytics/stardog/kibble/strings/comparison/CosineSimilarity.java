@@ -10,8 +10,6 @@ import com.google.common.collect.Range;
 import com.stardog.stark.Literal;
 import com.stardog.stark.Value;
 
-import static com.stardog.stark.Values.literal;
-
 public final class CosineSimilarity extends AbstractFunction implements StringFunction {
 
     private info.debatty.java.stringsimilarity.Cosine cosine;
@@ -23,9 +21,6 @@ public final class CosineSimilarity extends AbstractFunction implements StringFu
     private CosineSimilarity(final CosineSimilarity cosineSimilarity) {
         super(cosineSimilarity);
         this.cosine = cosineSimilarity.cosine;
-    }
-
-        return cosine;
     }
 
     @Override

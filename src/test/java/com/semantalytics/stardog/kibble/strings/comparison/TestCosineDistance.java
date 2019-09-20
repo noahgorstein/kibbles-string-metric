@@ -3,16 +3,11 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import com.stardog.stark.Literal;
 import com.stardog.stark.Value;
-import com.stardog.stark.query.Binding;
 import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
 
-import java.util.Optional;
-
 import static com.complexible.stardog.plan.filter.functions.AbstractFunction.assertLiteral;
-import static com.complexible.stardog.plan.filter.functions.AbstractFunction.assertStringLiteral;
-import static org.assertj.core.api.Assertions.withPrecision;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 public class TestCosineDistance extends AbstractStardogTest {
@@ -44,9 +39,9 @@ public class TestCosineDistance extends AbstractStardogTest {
 
             assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
-            final BindingSet aValue = aResult.next();
+            final BindingSet aBindingSet = aResult.next();
 
-            assertThat(aValue).isEmpty();
+            assertThat(aBindingSet).isEmpty();
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
@@ -63,8 +58,8 @@ public class TestCosineDistance extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -80,8 +75,8 @@ public class TestCosineDistance extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -97,8 +92,8 @@ public class TestCosineDistance extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -110,12 +105,12 @@ public class TestCosineDistance extends AbstractStardogTest {
 
         try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -127,12 +122,12 @@ public class TestCosineDistance extends AbstractStardogTest {
 
         try (final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 }

@@ -40,34 +40,40 @@ public final class SmithWaterman extends AbstractFunction implements StringFunct
 
             switch(values.length) {
                 case 7: {
+                    final float gapA;
+                    final float gapB;
+                    final float subPenaltyA;
+                    final float subPenaltyB;
+                    final int windowSize;
+
                     for (final Expression expression : getArgs()) {
                         if (!(expression instanceof Constant)) {
                             return ValueOrError.Error;
                         }
                     }
                     if(assertNumericLiteral(values[2]) && assertNumericLiteral(values[3]) ) {
-                        final float gapA = Literal.floatValue((Literal)values[2]);
-                        final float gapB = Literal.floatValue((Literal)values[3]);
+                        gapA = Literal.floatValue((Literal)values[2]);
+                        gapB = Literal.floatValue((Literal)values[3]);
                     } else {
                         return ValueOrError.Error;
                     }
 
                     if(assertNumericLiteral(values[4]) && assertNumericLiteral(values[5])) {
 
-                        final float subPenaltyA = Literal.floatValue((Literal)values[4]);
-                        final float subPenaltyB = Literal.floatValue((Literal)values[5]);
+                        subPenaltyA = Literal.floatValue((Literal)values[4]);
+                        subPenaltyB = Literal.floatValue((Literal)values[5]);
                     } else {
                         return ValueOrError.Error;
                     }
 
                     if(assertNumericLiteral(values[6])) {
-                        final int windowSize = Literal.intValue((Literal)values[6]);
+                        windowSize = Literal.intValue((Literal)values[6]);
                     } else {
                         return ValueOrError.Error;
                     }
 
                     org.simmetrics.metrics.SmithWaterman sw  = new org.simmetrics.metrics.SmithWaterman(new AffineGap(gapA, gapB), new MatchMismatch(subPenaltyA, subPenaltyB), windowSize);
-                    return ValueOrError.Float.of(getSmithWatermanFunction(values).compare(firstString, secondString));
+                    return ValueOrError.Float.of(smithWaterman.compare(firstString, secondString));
                 }
                 case 2: {
                     org.simmetrics.metrics.SmithWaterman sw  = new org.simmetrics.metrics.SmithWaterman();
@@ -78,14 +84,10 @@ public final class SmithWaterman extends AbstractFunction implements StringFunct
                 }
             }
 
-            return ValueOrError.Float.of(getSmithWatermanFunction(values).compare(firstString, secondString));
         } else {
             return ValueOrError.Error;
         }
 
-    }
-
-    private org.simmetrics.metrics.SmithWaterman getSmithWatermanFunction(final Value... values) throws ExpressionEvaluationException {
     }
 
     @Override
