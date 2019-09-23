@@ -1,8 +1,9 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.query.BindingSet;
+import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
-import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -14,7 +15,7 @@ public class TestQGram extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?dist where { bind(stringmetric:qgram(\"ABCD\", \"ABCE\", 2) as ?dist) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
@@ -31,7 +32,7 @@ public class TestQGram extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:qgram(\"one\", \"two\", \"three\", \"four\") as ?str) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();
@@ -47,7 +48,7 @@ public class TestQGram extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:qgram(7) as ?str) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 

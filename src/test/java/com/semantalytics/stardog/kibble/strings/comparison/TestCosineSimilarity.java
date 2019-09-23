@@ -1,6 +1,7 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
 import com.stardog.stark.Value;
 import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
@@ -37,10 +38,10 @@ public class TestCosineSimilarity extends AbstractStardogTest {
 
             assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
-            final String aValue = aResult.next().getValue("result").stringValue();
+            final Value aValue = aResult.next().get("result");
 
-            assertEquals(0.7071, Double.parseDouble(aValue), 0.0001);
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.7071);
+            assertThat(aResult).withFailMessage("Should have no more results");
         }
     }
 
@@ -56,8 +57,8 @@ public class TestCosineSimilarity extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -73,8 +74,8 @@ public class TestCosineSimilarity extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -90,8 +91,8 @@ public class TestCosineSimilarity extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -107,8 +108,8 @@ public class TestCosineSimilarity extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -123,8 +124,8 @@ public class TestCosineSimilarity extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 }

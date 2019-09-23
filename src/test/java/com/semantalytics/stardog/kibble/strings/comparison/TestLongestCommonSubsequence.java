@@ -1,10 +1,13 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
-import com.complexible.stardog.api.Connection;
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
+import com.stardog.stark.query.BindingSet;
+import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
-import org.openrdf.query.QueryResult;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.*;
 
 public class TestLongestCommonSubsequence extends AbstractStardogTest {
@@ -15,15 +18,15 @@ public class TestLongestCommonSubsequence extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:longestCommonSubsequence(\"AGCAT\", \"GAC\") as ?result) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-        assertTrue("Should have a result", aResult.hasNext());
+            assertTrue("Should have a result", aResult.hasNext());
 
-        final String aValue = aResult.next().getValue("result").stringValue();
+            final Value aValue = aResult.next().get("result");
 
-        assertEquals(0.4, Double.parseDouble(aValue), 0.0);
-
-        assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.4);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
+        }
     }
 
     @Test
@@ -32,14 +35,14 @@ public class TestLongestCommonSubsequence extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:longestCommonSubsequence(\"one\", \"two\", \"three\") as ?result) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
-        assertTrue("Should have a result", aResult.hasNext());
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
+            assertTrue("Should have a result", aResult.hasNext());
 
-        final BindingSet aBindingSet = aResult.next();
+            final BindingSet aBindingSet = aResult.next();
 
-        assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-        assertFalse("Should have no more results", aResult.hasNext());
+            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
+        }
     }
 
     @Test
@@ -48,13 +51,12 @@ public class TestLongestCommonSubsequence extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:longestCommonSubsequence(7) as ?result) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();
 
-        assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-        assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(aBindingSet).isEmpty();
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 }

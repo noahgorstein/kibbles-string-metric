@@ -2,9 +2,10 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import com.stardog.stark.Literal;
+import com.stardog.stark.query.BindingSet;
+import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
 import org.openrdf.model.Value;
-import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -16,11 +17,11 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"This is the first string\", \"And this is another string\") as ?result) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
-            final Value aValue = aResult.next().getValue("result");
+            final Value aValue = aResult.next().value("result").get();
 
             assertTrue(aValue instanceof Literal);
 
@@ -37,7 +38,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"This is the first string\", \"And this is another string\", 5) as ?result) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -58,7 +59,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"one\", \"two\", \"three\", \"four\") as ?result) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -75,7 +76,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(7) as ?result) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -92,7 +93,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"Stardog\", 2) as ?result) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -109,7 +110,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?result where { bind(stringmetric:sift4(\"Stardog\", \"Starlight\", \"Starship\") as ?result) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
@@ -126,7 +127,7 @@ public class TestSift4 extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:sift4(\"Stardog\", \"Starlight\", ?thirdArg) as ?result) }";
 
-            try(final QueryResult aResult = connection.select(aQuery).execute()) {
+            try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 

@@ -1,8 +1,10 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Value;
+import com.stardog.stark.query.BindingSet;
+import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
-import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -14,11 +16,11 @@ public class TestNormalizedLevenshteinDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?dist where { bind(stringmetric:normalizedLevenshteinDistance(\"My string\", \"My $tring\") as ?dist) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
-        final String aValue = aResult.next().getValue("dist").stringValue();
+        final Value aValue = aResult.next().value("dist").get();
 
         assertEquals(0.1111, Double.parseDouble(aValue), 0.001);
 
@@ -31,7 +33,7 @@ public class TestNormalizedLevenshteinDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:normalizedLevenshteinDistance(\"one\", \"two\", \"three\") as ?str) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();
@@ -46,7 +48,7 @@ public class TestNormalizedLevenshteinDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:normalizedLevenshteinDistance(7) as ?str) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();

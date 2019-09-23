@@ -2,9 +2,10 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import com.stardog.stark.Literal;
+import com.stardog.stark.query.BindingSet;
+import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
 import org.openrdf.model.Value;
-import org.openrdf.query.QueryResult;
 
 import static org.junit.Assert.*;
 
@@ -16,11 +17,11 @@ public class TestSorensenDiceSimilarity extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:sorensenDiceSimilarity(\"ABCDE\", \"ABCDFG\", 2) as ?result) }";
 
-            try(final QueryResult aResult = connection.select(aQuery).execute()) {
+            try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 
-                final Value aValue = aResult.next().getValue("result");
+                final Value aValue = aResult.next().value("result").get();
 
                 assertTrue(aValue instanceof Literal);
 
@@ -37,7 +38,7 @@ public class TestSorensenDiceSimilarity extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:sorensenDiceSimilarity(\"one\", \"two\", \"three\", \"four\") as ?str) }";
 
-            try(final QueryResult aResult = connection.select(aQuery).execute()) {
+            try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 
@@ -54,7 +55,7 @@ public class TestSorensenDiceSimilarity extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                     "select ?result where { bind(stringmetric:sorensenDiceSimilarity(\"one\") as ?result) }";
 
-            try(final QueryResult aResult = connection.select(aQuery).execute()) {
+            try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
                 assertTrue("Should have a result", aResult.hasNext());
 

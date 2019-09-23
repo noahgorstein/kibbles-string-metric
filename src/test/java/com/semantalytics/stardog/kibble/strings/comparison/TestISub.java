@@ -1,9 +1,13 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
+import com.stardog.stark.query.BindingSet;
+import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
-import org.openrdf.query.QueryResult;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.*;
 
 public class TestISub extends AbstractStardogTest {
@@ -14,14 +18,14 @@ public class TestISub extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?dist where { bind(stringmetric:iSub(\"ABC\", \"ABCE\") as ?dist) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
-            final String aValue = aResult.next().getValue("dist").stringValue();
+            final Value aValue = aResult.next().value("dist").get();
 
-            assertEquals(0.9, Double.parseDouble(aValue), 0.0001);
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat((Literal.doubleValue((Literal)aValue))).isEqualTo(.9);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -31,14 +35,14 @@ public class TestISub extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?dist where { bind(stringmetric:iSub(\"ABC\", \"ABCE\", true) as ?dist) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
-            final String aValue = aResult.next().getValue("dist").stringValue();
+            final Value aValue = aResult.next().value("dist").get();
 
-            assertEquals(0.9, Double.parseDouble(aValue), 0.0001);
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.9);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -48,13 +52,13 @@ public class TestISub extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:iSub(\"one\", \"two\", \"three\", \"four\") as ?str) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
             assertTrue("Should have a result", aResult.hasNext());
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -64,13 +68,13 @@ public class TestISub extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:iSub(7) as ?str) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
             assertTrue("Should have a result", aResult.hasNext());
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 }
