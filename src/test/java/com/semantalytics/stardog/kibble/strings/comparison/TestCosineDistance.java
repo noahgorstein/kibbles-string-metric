@@ -7,6 +7,8 @@ import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
 
+import java.util.Optional;
+
 import static com.complexible.stardog.plan.filter.functions.AbstractFunction.assertLiteral;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -39,9 +41,11 @@ public class TestCosineDistance extends AbstractStardogTest {
 
             assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
-            final BindingSet aBindingSet = aResult.next();
-
-            assertThat(aBindingSet).isEmpty();
+            final Optional<Value> aPossibleValue = aResult.next().value("result");
+            assertThat(aPossibleValue).isPresent();
+            final Value aValue = aPossibleValue.get();
+            assertThat(assertLiteral(aValue)).isTrue();
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.29289);
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }

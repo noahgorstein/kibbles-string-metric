@@ -31,31 +31,18 @@ public final class CosineSimilarity extends AbstractFunction implements StringFu
     @Override
     protected ValueOrError internalEvaluate(final Value... values) {
 
-        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
+        if (assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
 
-            final String string1 = ((Literal)values[0]).label();
-            final String string2 = ((Literal)values[1]).label();
+            final String string1 = ((Literal) values[0]).label();
+            final String string2 = ((Literal) values[1]).label();
 
-            if(cosine == null) {
-                if (values.length == 3) {
-                    assertNumericLiteral(values[2]);
-                    if((getThirdArg() instanceof Constant)) {
-                        return ValueOrError.Error;
-                    }
-                    if(assertNumericLiteral(values[2])) {
-                        final int n = Literal.intValue((Literal)values[2]);
-                        cosine = new info.debatty.java.stringsimilarity.Cosine(n);
-                        return ValueOrError.Double.of(cosine.similarity(string1, string2));
-                    } else {
-                        return ValueOrError.Error;
-                    }
-                } else {
-                    cosine = new info.debatty.java.stringsimilarity.Cosine();
-                    return ValueOrError.Double.of(cosine.similarity(string1, string2));
-                }
+            if (cosine == null && values.length == 3 && assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
+                final int n = Literal.intValue((Literal) values[2]);
+                cosine = new info.debatty.java.stringsimilarity.Cosine(n);
             } else {
-                return ValueOrError.Error;
+                cosine = new info.debatty.java.stringsimilarity.Cosine();
             }
+            return ValueOrError.Double.of(cosine.similarity(string1, string2));
         } else {
             return ValueOrError.Error;
         }

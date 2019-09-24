@@ -45,7 +45,6 @@ import java.net.InetSocketAddress;
         TestSorensenDiceSimilarity.class,
         TestWeightedLevenshteinDistance.class
 })
-
 public class StringMetricTestSuite extends TestCase {
 
 

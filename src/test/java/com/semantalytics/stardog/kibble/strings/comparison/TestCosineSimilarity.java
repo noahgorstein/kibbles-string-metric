@@ -7,7 +7,10 @@ import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import java.util.Optional;
+
+import static com.complexible.stardog.plan.filter.functions.AbstractFunction.assertLiteral;
+import static org.assertj.core.api.Assertions.*;
 
 public class TestCosineSimilarity extends AbstractStardogTest {
 
@@ -21,9 +24,11 @@ public class TestCosineSimilarity extends AbstractStardogTest {
 
             assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
-            final Value aValue = aResult.next().value("result").get();
+            final Optional<Value> aPossibleValue = aResult.next().value("result");
+            final Value aValue = aPossibleValue.get();
 
-            assertThat(aValue).isEqualTo(0.7071);
+            assertThat(assertLiteral(aValue));
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.7071);
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
@@ -37,10 +42,12 @@ public class TestCosineSimilarity extends AbstractStardogTest {
         try (final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertThat(aResult).hasNext().withFailMessage("Should have a result");
+            Optional<Value> aPossibleValue = aResult.next().value("result");
+            assertThat(aPossibleValue).isPresent();
 
-            final Value aValue = aResult.next().get("result");
+            final Value aValue = aPossibleValue.get();
 
-            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.7071);
+            assertThat(Literal.doubleValue((Literal)aValue)).isCloseTo(0.7071, within(0.001));
             assertThat(aResult).withFailMessage("Should have no more results");
         }
     }

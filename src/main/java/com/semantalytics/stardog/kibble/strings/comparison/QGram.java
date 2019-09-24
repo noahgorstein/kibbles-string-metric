@@ -14,35 +14,35 @@ public final class QGram extends AbstractFunction implements StringFunction {
 
     private info.debatty.java.stringsimilarity.QGram qGram;
 
-    {
-        if (getArgs().size() == 3 && getArgs().get(2) instanceof Constant) {
-            final int n = Integer.parseInt(((Constant) getArgs().get(2)).getValue().stringValue());
-            qGram = new info.debatty.java.stringsimilarity.QGram(n);
-        } else {
-            qGram = new info.debatty.java.stringsimilarity.QGram();
-        }
-    }
-
     protected QGram() {
         super(Range.closed(2, 3), StringMetricVocabulary.qgram.stringValue());
     }
 
     private QGram(final QGram qGram) {
         super(qGram);
+        this.qGram = qGram.qGram;
     }
 
     @Override
     protected ValueOrError internalEvaluate(final Value... values) {
 
-        if(assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
+        if (assertStringLiteral(values[0]) && assertStringLiteral(values[1])) {
 
-            final String firstString = ((Literal)values[0]).label();
-            final String secondString = ((Literal)values[1]).label();
+            final String firstString = ((Literal) values[0]).label();
+            final String secondString = ((Literal) values[1]).label();
 
-            if(values.length == 3) {
-                assertNumericLiteral(values[2]);
+            if(qGram == null) {
+                if (values.length == 3) {
+                    if (assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
+                        final int n = Literal.intValue((Literal) values[2]);
+                        qGram = new info.debatty.java.stringsimilarity.QGram(n);
+                    } else {
+                        return ValueOrError.Error;
+                    }
+                } else {
+                    qGram = new info.debatty.java.stringsimilarity.QGram();
+                }
             }
-
             return ValueOrError.Double.of(qGram.distance(firstString, secondString));
         } else {
             return ValueOrError.Error;

@@ -40,7 +40,7 @@ public class TestSmithWaterman extends AbstractStardogTest {
 
         try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-            assertTrue("Should have a result", aResult.hasNext());
+            assertThat(aResult).hasNext().withFailMessage("Should have a result");
 
             final Value aValue = aResult.next().value("result").get();
 

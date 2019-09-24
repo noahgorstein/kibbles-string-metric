@@ -7,6 +7,8 @@ import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.*;
 
@@ -16,16 +18,19 @@ public class TestQGram extends AbstractStardogTest {
     public void testQGram() {
 
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
-                "select ?dist where { bind(stringmetric:qgram(\"ABCD\", \"ABCE\", 2) as ?dist) }";
+                "select ?result where { bind(stringmetric:qgram(\"ABCD\", \"ABCE\", 2) as ?result) }";
 
-        final SelectQueryResult aResult = connection.select(aQuery).execute();
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-        assertTrue("Should have a result", aResult.hasNext());
+            assertTrue("Should have a result", aResult.hasNext());
 
-        final Value aValue = aResult.next().value("dist").get();
+            final Optional<Value> aPossibleValue = aResult.next().value("result");
+            assertThat(aPossibleValue).isPresent();
+            final Value aValue = aPossibleValue.get();
 
-        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(2.0);
-        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
+            assertThat(Literal.doubleValue((Literal) aValue)).isEqualTo(2.0);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
+        }
     }
 
     @Test
@@ -34,13 +39,14 @@ public class TestQGram extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:qgram(\"one\", \"two\", \"three\", \"four\") as ?str) }";
 
-        final SelectQueryResult aResult = connection.select(aQuery).execute();
-        assertTrue("Should have a result", aResult.hasNext());
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
+            assertTrue("Should have a result", aResult.hasNext());
 
-        final BindingSet aBindingSet = aResult.next();
+            final BindingSet aBindingSet = aResult.next();
 
-        assertThat(aBindingSet).isEmpty();
-        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
+        }
     }
 
     @Test
@@ -49,13 +55,14 @@ public class TestQGram extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:qgram(7) as ?str) }";
 
-        final SelectQueryResult aResult = connection.select(aQuery).execute();
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
-        assertTrue("Should have a result", aResult.hasNext());
+            assertTrue("Should have a result", aResult.hasNext());
 
-        final BindingSet aBindingSet = aResult.next();
+            final BindingSet aBindingSet = aResult.next();
 
-        assertThat(aBindingSet).isEmpty();
-        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
+        }
     }
 }
