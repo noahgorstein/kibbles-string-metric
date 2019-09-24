@@ -2,11 +2,12 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
-import org.openrdf.model.Value;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.*;
 
 public class TestSift4 extends AbstractStardogTest {
@@ -25,10 +26,8 @@ public class TestSift4 extends AbstractStardogTest {
 
             assertTrue(aValue instanceof Literal);
 
-            final double aLiteralValue = ((Literal)aValue).doubleValue();
-
-            assertEquals(11.0, aLiteralValue, 0.0);
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(11.0);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -42,14 +41,12 @@ public class TestSift4 extends AbstractStardogTest {
 
             assertTrue("Should have a result", aResult.hasNext());
 
-            final Value aValue = aResult.next().getValue("result");
+            final Value aValue = aResult.next().value("result").get();
 
             assertTrue(aValue instanceof Literal);
 
-            final double aLiteralValue = ((Literal)aValue).doubleValue();
-
-            assertEquals(11.0, aLiteralValue, 0.0);
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(11.0);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -65,8 +62,8 @@ public class TestSift4 extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -82,8 +79,8 @@ public class TestSift4 extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -99,8 +96,8 @@ public class TestSift4 extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -116,8 +113,8 @@ public class TestSift4 extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -133,8 +130,8 @@ public class TestSift4 extends AbstractStardogTest {
 
                 final BindingSet aBindingSet = aResult.next();
 
-                assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-                assertFalse("Should have no more results", aResult.hasNext());
+                assertThat(aBindingSet).isEmpty();
+                assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
             }
     }
 }

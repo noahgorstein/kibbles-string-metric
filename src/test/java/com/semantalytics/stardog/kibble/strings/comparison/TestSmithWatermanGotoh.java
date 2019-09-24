@@ -1,11 +1,13 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
 import com.stardog.stark.Value;
 import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.*;
 
 public class TestSmithWatermanGotoh extends AbstractStardogTest {
@@ -22,9 +24,8 @@ public class TestSmithWatermanGotoh extends AbstractStardogTest {
 
         final Value aValue = aResult.next().value("result").get();
 
-        assertEquals(0.5714286, Double.parseDouble(aValue), 0.00001);
-
-        assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.5714286);
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 
     @Test
@@ -37,11 +38,10 @@ public class TestSmithWatermanGotoh extends AbstractStardogTest {
 
         assertTrue("Should have a result", aResult.hasNext());
 
-        final String aValue = aResult.next().getValue("result").stringValue();
+        final Value aValue = aResult.next().value("result").get();
 
-        assertEquals(0.5714286, Double.parseDouble(aValue), 0.00001);
-
-        assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.5714286);
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 
     @Test
@@ -55,10 +55,11 @@ public class TestSmithWatermanGotoh extends AbstractStardogTest {
 
         final BindingSet aBindingSet = aResult.next();
 
-        assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
+        assertThat(aBindingSet).isEmpty();
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
 
     }
-    
+
     @Test
     public void testSmithWatermanGotohWrongType() {
 
@@ -70,6 +71,7 @@ public class TestSmithWatermanGotoh extends AbstractStardogTest {
 
         final BindingSet aBindingSet = aResult.next();
 
-        assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
+        assertThat(aBindingSet).isEmpty();
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 }

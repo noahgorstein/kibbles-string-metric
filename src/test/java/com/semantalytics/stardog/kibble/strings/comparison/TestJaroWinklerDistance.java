@@ -1,9 +1,13 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
+import com.stardog.stark.query.BindingSet;
+import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
-import org.openrdf.query.QueryResult;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.*;
 
 public class TestJaroWinklerDistance extends AbstractStardogTest {
@@ -14,14 +18,14 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = "prefix stringmetric: <" + StringMetricVocabulary.NAMESPACE + "> " +
                 "select ?dist where { bind(stringmetric:jaroWinklerDistance(\"My string\", \"My tsring\") as ?dist) }";
 
-        try(final QueryResult aResult = connection.select(aQuery).execute()) {
+        try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
 
-            final String aValue = aResult.next().getValue("dist").stringValue();
+            final Value aValue = aResult.next().value("dist").get();
 
-            assertEquals(0.025925, Double.parseDouble(aValue), 0.000001);
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(.025925);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -31,15 +35,14 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?distance where { bind(stringmetric:jaroWinklerDistance(\"My string\", \"My tsring\", 0.1) as ?distance) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
-        final String aValue = aResult.next().getValue("distance").stringValue();
+        final Value aValue = aResult.next().value("distance").get();
 
-        assertEquals(0.025925, Double.parseDouble(aValue), 0.000001);
-
-        assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.025925);
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 
     @Test
@@ -48,15 +51,14 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?distance where { bind(stringmetric:jaroWinklerDistance(\"My string\", \"My tsring\", \"x\") as ?distance) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();
 
-        assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-        assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(aBindingSet).isEmpty();
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 
     @Test
@@ -65,15 +67,14 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:jaroWinklerDistance(\"one\", \"two\", 0.7, \"four\") as ?str) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();
 
-        assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-        assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(aBindingSet).isEmpty();
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 
     @Test
@@ -81,14 +82,13 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
         final String aQuery = StringMetricVocabulary.sparqlPrefix("stringmetric") +
                 "select ?str where { bind(stringmetric:jaroWinklerDistance(7) as ?str) }";
 
-        final QueryResult aResult = connection.select(aQuery).execute();
+        final SelectQueryResult aResult = connection.select(aQuery).execute();
 
         assertTrue("Should have a result", aResult.hasNext());
 
         final BindingSet aBindingSet = aResult.next();
 
-        assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-        assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(aBindingSet).isEmpty();
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 }

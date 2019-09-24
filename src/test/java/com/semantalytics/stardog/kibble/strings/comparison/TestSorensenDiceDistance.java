@@ -1,11 +1,13 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
+import com.stardog.stark.Literal;
 import com.stardog.stark.Value;
 import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.*;
 
 public class TestSorensenDiceDistance extends AbstractStardogTest {
@@ -22,8 +24,9 @@ public class TestSorensenDiceDistance extends AbstractStardogTest {
 
         final Value aValue = aResult.next().value("dist").get();
 
-        assertEquals(0.3333, Double.parseDouble(aValue), 0.0001);
+        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.3333);
         assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 
     @Test
@@ -41,9 +44,8 @@ public class TestSorensenDiceDistance extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-            assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(aBindingSet).isEmpty();
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 
     @Test
@@ -61,8 +63,7 @@ public class TestSorensenDiceDistance extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-            assertFalse("Should have no more results", aResult.hasNext());
+        assertThat(aBindingSet).isEmpty();
+        assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 }

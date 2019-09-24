@@ -2,11 +2,12 @@ package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.semantalytics.stardog.kibble.AbstractStardogTest;
 import com.stardog.stark.Literal;
+import com.stardog.stark.Value;
 import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
-import org.openrdf.model.Value;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.*;
 
 public class TestSmithWaterman extends AbstractStardogTest {
@@ -23,13 +24,11 @@ public class TestSmithWaterman extends AbstractStardogTest {
 
             final Value aValue = aResult.next().value("result").get();
 
-            assertTrue(aValue instanceof Literal);
-
-            final float aLiteralValue = ((Literal) aValue).floatValue();
-
-            assertEquals(0.5714286, aLiteralValue, 0.00001);
+            assertThat(aValue).isInstanceOf(Literal.class);
+            assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.5714286);
 
             assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -42,15 +41,12 @@ public class TestSmithWaterman extends AbstractStardogTest {
         try(final SelectQueryResult aResult = connection.select(aQuery).execute()) {
 
             assertTrue("Should have a result", aResult.hasNext());
-            final Value aValue = aResult.next().getValue("result");
 
-            assertTrue(aValue instanceof Literal);
+            final Value aValue = aResult.next().value("result").get();
 
-            final float aLiteralValue = ((Literal) aValue).floatValue();
-
-            assertEquals(0.5714286, aLiteralValue, 0.00001);
-
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aValue).isInstanceOf(Literal.class);
+            assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.5714286);
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -66,9 +62,8 @@ public class TestSmithWaterman extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 
@@ -84,9 +79,8 @@ public class TestSmithWaterman extends AbstractStardogTest {
 
             final BindingSet aBindingSet = aResult.next();
 
-            assertTrue("Should have no bindings", aBindingSet.getBindingNames().isEmpty());
-
-            assertFalse("Should have no more results", aResult.hasNext());
+            assertThat(aBindingSet).isEmpty();
+            assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
 }
