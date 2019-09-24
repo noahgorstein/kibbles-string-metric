@@ -7,6 +7,8 @@ import com.stardog.stark.query.BindingSet;
 import com.stardog.stark.query.SelectQueryResult;
 import org.junit.*;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.Assert.*;
 
@@ -22,10 +24,11 @@ public class TestSmithWaterman extends AbstractStardogTest {
 
             assertTrue("Should have a result", aResult.hasNext());
 
-            final Value aValue = aResult.next().value("result").get();
-
+            final Optional<Value> aPossibleValue = aResult.next().value("result");
+            assertThat(aPossibleValue).isPresent();
+            final Value aValue = aPossibleValue.get();
             assertThat(aValue).isInstanceOf(Literal.class);
-            assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.5714286);
+            assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.5714286f);
 
             assertFalse("Should have no more results", aResult.hasNext());
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
@@ -45,7 +48,7 @@ public class TestSmithWaterman extends AbstractStardogTest {
             final Value aValue = aResult.next().value("result").get();
 
             assertThat(aValue).isInstanceOf(Literal.class);
-            assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.5714286);
+            assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.5714286f);
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }

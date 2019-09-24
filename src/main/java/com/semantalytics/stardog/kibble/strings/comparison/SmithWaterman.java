@@ -13,6 +13,9 @@ import com.stardog.stark.Value;
 import org.simmetrics.metrics.functions.AffineGap;
 import org.simmetrics.metrics.functions.MatchMismatch;
 
+import java.util.Arrays;
+import java.util.function.Predicate;
+
 public final class SmithWaterman extends AbstractFunction implements StringFunction {
 
     private org.simmetrics.metrics.SmithWaterman smithWaterman;
@@ -46,43 +49,38 @@ public final class SmithWaterman extends AbstractFunction implements StringFunct
                     final float subPenaltyB;
                     final int windowSize;
 
-                    for (final Expression expression : getArgs()) {
-                        if (!(expression instanceof Constant)) {
+                    if(Arrays.stream(values).skip(2).anyMatch(not(Constant.class::isInstance))) {
                             return ValueOrError.Error;
-                        }
                     }
-                    if(assertNumericLiteral(values[2]) && assertNumericLiteral(values[3]) ) {
-                        gapA = Literal.floatValue((Literal)values[2]);
-                        gapB = Literal.floatValue((Literal)values[3]);
-                    } else {
+
+                    if(Arrays.stream(values).skip(2).anyMatch(not(this::assertNumericLiteral))) {
                         return ValueOrError.Error;
                     }
 
-                    if(assertNumericLiteral(values[4]) && assertNumericLiteral(values[5])) {
+                        gapA = Literal.floatValue((Literal)values[2]);
+                        gapB = Literal.floatValue((Literal)values[3]);
 
                         subPenaltyA = Literal.floatValue((Literal)values[4]);
                         subPenaltyB = Literal.floatValue((Literal)values[5]);
-                    } else {
-                        return ValueOrError.Error;
-                    }
 
-                    if(assertNumericLiteral(values[6])) {
                         windowSize = Literal.intValue((Literal)values[6]);
-                    } else {
-                        return ValueOrError.Error;
-                    }
 
-                    org.simmetrics.metrics.SmithWaterman sw  = new org.simmetrics.metrics.SmithWaterman(new AffineGap(gapA, gapB), new MatchMismatch(subPenaltyA, subPenaltyB), windowSize);
-                    return ValueOrError.Float.of(smithWaterman.compare(firstString, secondString));
+                    if(smithWaterman == null) {
+                        smithWaterman = new org.simmetrics.metrics.SmithWaterman(new AffineGap(gapA, gapB), new MatchMismatch(subPenaltyA, subPenaltyB), windowSize);
+                    }
+                    break;
                 }
                 case 2: {
-                    org.simmetrics.metrics.SmithWaterman sw  = new org.simmetrics.metrics.SmithWaterman();
-                    return ValueOrError.Float.of(sw.compare(firstString, secondString));
+                    if(smithWaterman == null) {
+                        smithWaterman = new org.simmetrics.metrics.SmithWaterman();
+                    }
+                    break;
                 }
                 default: {
                     return ValueOrError.Error;
                 }
             }
+            return ValueOrError.Float.of(smithWaterman.compare(firstString, secondString));
 
         } else {
             return ValueOrError.Error;
@@ -103,5 +101,9 @@ public final class SmithWaterman extends AbstractFunction implements StringFunct
     @Override
     public String toString() {
         return StringMetricVocabulary.smithWaterman.name();
+    }
+
+    private static <R> Predicate<R> not(Predicate<R> predicate) {
+        return predicate.negate();
     }
 }
