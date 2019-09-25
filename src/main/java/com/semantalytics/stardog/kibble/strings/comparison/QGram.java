@@ -31,15 +31,17 @@ public final class QGram extends AbstractFunction implements StringFunction {
             final String firstString = ((Literal) values[0]).label();
             final String secondString = ((Literal) values[1]).label();
 
-            if(qGram == null) {
-                if (values.length == 3) {
-                    if (assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
-                        final int n = Literal.intValue((Literal) values[2]);
+            if (values.length == 3) {
+                if (assertNumericLiteral(values[2])) {
+                    final int n = Literal.intValue((Literal) values[2]);
+                    if(qGram == null || qGram.getK() != n) {
                         qGram = new info.debatty.java.stringsimilarity.QGram(n);
-                    } else {
-                        return ValueOrError.Error;
                     }
                 } else {
+                    return ValueOrError.Error;
+                }
+            } else if (values.length == 2) {
+                if(qGram == null) {
                     qGram = new info.debatty.java.stringsimilarity.QGram();
                 }
             }

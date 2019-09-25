@@ -25,7 +25,7 @@ public class TestSorensenDiceSimilarity extends AbstractStardogTest {
                 final Value aValue = aResult.next().value("result").get();
 
                 assertThat(aValue).isInstanceOf(Literal.class);
-                assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.6666);
+                assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.6666667f);
                 assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
             }
     }

@@ -42,7 +42,7 @@ public class TestMongeElkan extends AbstractStardogTest {
 
                 final Value aValue = aResult.next().value("result").get();
 
-                assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.29289);
+                assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.29289321881345254);
                 assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
             }
     }

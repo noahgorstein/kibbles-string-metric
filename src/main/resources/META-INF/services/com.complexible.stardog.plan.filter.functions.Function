@@ -1,4 +1,5 @@
 com.semantalytics.stardog.kibble.strings.comparison.CosineSimilarity
+com.semantalytics.stardog.kibble.strings.comparison.CosineDistance
 com.semantalytics.stardog.kibble.strings.comparison.DamerauDistance
 com.semantalytics.stardog.kibble.strings.comparison.HammingDistance
 com.semantalytics.stardog.kibble.strings.comparison.ISub

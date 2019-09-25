@@ -28,7 +28,7 @@ public class TestCosineSimilarity extends AbstractStardogTest {
             final Value aValue = aPossibleValue.get();
 
             assertThat(assertLiteral(aValue));
-            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.7071);
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.7071067811865475);
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
@@ -47,7 +47,7 @@ public class TestCosineSimilarity extends AbstractStardogTest {
 
             final Value aValue = aPossibleValue.get();
 
-            assertThat(Literal.doubleValue((Literal)aValue)).isCloseTo(0.7071, within(0.001));
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.7071067811865475);
             assertThat(aResult).withFailMessage("Should have no more results");
         }
     }

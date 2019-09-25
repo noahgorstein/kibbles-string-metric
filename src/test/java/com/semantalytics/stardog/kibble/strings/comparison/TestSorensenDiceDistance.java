@@ -24,7 +24,7 @@ public class TestSorensenDiceDistance extends AbstractStardogTest {
 
         final Value aValue = aResult.next().value("dist").get();
 
-        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.3333);
+        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.33333333333333337);
         assertFalse("Should have no more results", aResult.hasNext());
         assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }

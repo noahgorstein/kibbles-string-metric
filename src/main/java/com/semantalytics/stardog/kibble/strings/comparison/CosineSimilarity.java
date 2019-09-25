@@ -1,7 +1,6 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
-import com.complexible.stardog.plan.filter.expr.Constant;
 import com.complexible.stardog.plan.filter.expr.ValueOrError;
 import com.complexible.stardog.plan.filter.functions.AbstractFunction;
 import com.complexible.stardog.plan.filter.functions.Function;
@@ -36,15 +35,19 @@ public final class CosineSimilarity extends AbstractFunction implements StringFu
             final String string1 = ((Literal) values[0]).label();
             final String string2 = ((Literal) values[1]).label();
 
-            if (cosine == null) {
-                if (values.length == 3 && assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
+            if (values.length == 3) {
+                if(assertNumericLiteral(values[2])) {
                     final int n = Literal.intValue((Literal) values[2]);
-                    cosine = new info.debatty.java.stringsimilarity.Cosine(n);
+                    if(cosine == null || cosine.getK() != n) {
+                        cosine = new info.debatty.java.stringsimilarity.Cosine(n);
+                    }
                 } else {
                     return ValueOrError.Error;
                 }
+            } else if (values.length == 2 && cosine == null) {
                 cosine = new info.debatty.java.stringsimilarity.Cosine();
             }
+
             return ValueOrError.Double.of(cosine.similarity(string1, string2));
         } else {
             return ValueOrError.Error;

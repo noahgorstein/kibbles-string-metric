@@ -24,7 +24,7 @@ public class TestNormalizedLevenshteinDistance extends AbstractStardogTest {
 
         final Value aValue = aResult.next().value("dist").get();
 
-        assertThat(Literal.doubleValue(((Literal)aValue))).isEqualTo(0.1111);
+        assertThat(Literal.doubleValue(((Literal)aValue))).isEqualTo(0.1111111111111111);
         assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 

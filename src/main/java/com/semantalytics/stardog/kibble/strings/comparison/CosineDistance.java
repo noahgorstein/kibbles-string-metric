@@ -1,5 +1,6 @@
 package com.semantalytics.stardog.kibble.strings.comparison;
 
+import com.complexible.stardog.plan.filter.Expression;
 import com.complexible.stardog.plan.filter.ExpressionVisitor;
 import com.complexible.stardog.plan.filter.expr.Constant;
 import com.complexible.stardog.plan.filter.expr.ValueOrError;
@@ -11,7 +12,7 @@ import com.stardog.stark.Value;
 
 public final class CosineDistance extends AbstractFunction implements StringFunction {
 
-    private info.debatty.java.stringsimilarity.Cosine cosine;
+    private info.debatty.java.stringsimilarity.Cosine cosine = null;
 
     protected CosineDistance() {
         super(Range.closed(2, 3), StringMetricVocabulary.cosineDistance.stringValue());
@@ -35,23 +36,20 @@ public final class CosineDistance extends AbstractFunction implements StringFunc
             final String string1 = ((Literal) values[0]).label();
             final String string2 = ((Literal) values[1]).label();
 
-
-            if (cosine == null) {
-                if (values.length == 3 && assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
+            if (values.length == 3) {
+                if(assertNumericLiteral(values[2])) {
                     final int n = Literal.intValue((Literal) values[2]);
-                    cosine = new info.debatty.java.stringsimilarity.Cosine(n);
-                } else if (values.length == 2) {
-                    cosine = new info.debatty.java.stringsimilarity.Cosine();
+                    if(cosine == null || cosine.getK() != n) {
+                        cosine = new info.debatty.java.stringsimilarity.Cosine(n);
+                    }
                 } else {
                     return ValueOrError.Error;
                 }
+            } else if (values.length == 2 && cosine == null) {
+                cosine = new info.debatty.java.stringsimilarity.Cosine();
             }
 
-            if (values.length == 3 && !assertNumericLiteral(values[2]) || !(values[2] instanceof Constant)) {
-                return ValueOrError.Error;
-            } else {
-                return ValueOrError.Double.of(cosine.distance(string1, string2));
-            }
+            return ValueOrError.Double.of(cosine.distance(string1, string2));
         } else {
             return ValueOrError.Error;
         }

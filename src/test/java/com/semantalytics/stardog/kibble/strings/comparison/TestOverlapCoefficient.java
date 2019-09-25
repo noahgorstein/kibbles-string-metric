@@ -23,7 +23,7 @@ public class TestOverlapCoefficient extends AbstractStardogTest {
 
         final Value aValue = aResult.next().value("overlapCoefficient").get();
 
-        assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.0);
+        assertThat(Literal.floatValue((Literal)aValue)).isEqualTo(0.0f);
         assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 

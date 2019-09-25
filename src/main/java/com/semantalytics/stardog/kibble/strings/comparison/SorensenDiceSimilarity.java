@@ -35,22 +35,19 @@ public class SorensenDiceSimilarity extends AbstractFunction implements StringFu
             final String firstString = ((Literal)values[0]).label();
             final String secondString = ((Literal)values[1]).label();
 
-            if(sorensenDice == null) {
-                if (values.length == 3) {
-                    if(!(getThirdArg() instanceof Constant)) {
-                        return ValueOrError.Error;
-                    }
-
-                    if(assertNumericLiteral(values[2])) {
-                        final int n = Literal.intValue((Literal)values[2]);
+            if (values.length == 3) {
+                if (assertNumericLiteral(values[2])) {
+                    final int n = Literal.intValue((Literal) values[2]);
+                    if (sorensenDice == null || sorensenDice.getK() != n) {
                         sorensenDice = new info.debatty.java.stringsimilarity.SorensenDice(n);
-                    } else {
-                        return ValueOrError.Error;
                     }
                 } else {
-                    sorensenDice = new info.debatty.java.stringsimilarity.SorensenDice();
+                    return ValueOrError.Error;
                 }
+            } else if(values.length == 2 && sorensenDice == null) {
+                sorensenDice = new info.debatty.java.stringsimilarity.SorensenDice();
             }
+
             return ValueOrError.Double.of(sorensenDice.similarity(firstString, secondString));
         } else {
             return ValueOrError.Error;

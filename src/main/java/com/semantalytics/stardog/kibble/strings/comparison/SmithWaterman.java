@@ -49,10 +49,6 @@ public final class SmithWaterman extends AbstractFunction implements StringFunct
                     final float subPenaltyB;
                     final int windowSize;
 
-                    if(Arrays.stream(values).skip(2).anyMatch(not(Constant.class::isInstance))) {
-                            return ValueOrError.Error;
-                    }
-
                     if(Arrays.stream(values).skip(2).anyMatch(not(this::assertNumericLiteral))) {
                         return ValueOrError.Error;
                     }

@@ -16,6 +16,7 @@ public enum StringMetricVocabulary {
     longestCommonSubsequence,
     longestCommonSubstring,
     metricLongestCommonSubsequence,
+    mongeElkan,
     needlemanWunch,
     ngram,
     normalizedLevenshteinDistance,
