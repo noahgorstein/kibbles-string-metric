@@ -35,14 +35,23 @@ public final class CosineDistance extends AbstractFunction implements StringFunc
             final String string1 = ((Literal) values[0]).label();
             final String string2 = ((Literal) values[1]).label();
 
-            if (cosine == null && values.length == 3 && assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
-                final int n = Literal.intValue((Literal) values[2]);
-                //TODO don't new every time
-                cosine = new info.debatty.java.stringsimilarity.Cosine(n);
-            } else {
-                cosine = new info.debatty.java.stringsimilarity.Cosine();
+
+            if (cosine == null) {
+                if (values.length == 3 && assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
+                    final int n = Literal.intValue((Literal) values[2]);
+                    cosine = new info.debatty.java.stringsimilarity.Cosine(n);
+                } else if (values.length == 2) {
+                    cosine = new info.debatty.java.stringsimilarity.Cosine();
+                } else {
+                    return ValueOrError.Error;
+                }
             }
-            return ValueOrError.Double.of(cosine.distance(string1, string2));
+
+            if (values.length == 3 && !assertNumericLiteral(values[2]) || !(values[2] instanceof Constant)) {
+                return ValueOrError.Error;
+            } else {
+                return ValueOrError.Double.of(cosine.distance(string1, string2));
+            }
         } else {
             return ValueOrError.Error;
         }

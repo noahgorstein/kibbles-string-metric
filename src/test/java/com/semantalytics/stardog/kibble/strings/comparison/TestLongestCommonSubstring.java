@@ -23,7 +23,7 @@ public class TestLongestCommonSubstring extends AbstractStardogTest {
 
         final Value aValue = aResult.next().value("result").get();
 
-        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.84615386);
+        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.5714286);
         assertFalse("Should have no more results", aResult.hasNext());
     }
 

@@ -24,7 +24,7 @@ public class TestJaroWinklerSimilarity extends AbstractStardogTest {
 
             final Value aValue = aResult.next().value("result").get();
 
-            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.9740740656852722);
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.97407407);
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }

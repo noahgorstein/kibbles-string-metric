@@ -24,7 +24,7 @@ public class TestNGram extends AbstractStardogTest {
 
         final Value aValue = aResult.next().value("dist").get();
 
-        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.58333);
+        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.5833333134651184);
         assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 

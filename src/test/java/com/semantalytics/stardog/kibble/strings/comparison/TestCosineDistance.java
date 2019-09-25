@@ -26,7 +26,7 @@ public class TestCosineDistance extends AbstractStardogTest {
 
             final Value aValue = aResult.next().get("result");
             assertThat(assertLiteral(aValue)).isTrue();
-            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.29289);
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.29289321881345254);
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
@@ -45,7 +45,7 @@ public class TestCosineDistance extends AbstractStardogTest {
             assertThat(aPossibleValue).isPresent();
             final Value aValue = aPossibleValue.get();
             assertThat(assertLiteral(aValue)).isTrue();
-            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.29289);
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.29289321881345254);
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }

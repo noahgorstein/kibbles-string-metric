@@ -36,10 +36,13 @@ public final class CosineSimilarity extends AbstractFunction implements StringFu
             final String string1 = ((Literal) values[0]).label();
             final String string2 = ((Literal) values[1]).label();
 
-            if (cosine == null && values.length == 3 && assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
-                final int n = Literal.intValue((Literal) values[2]);
-                cosine = new info.debatty.java.stringsimilarity.Cosine(n);
-            } else {
+            if (cosine == null) {
+                if (values.length == 3 && assertNumericLiteral(values[2]) && values[2] instanceof Constant) {
+                    final int n = Literal.intValue((Literal) values[2]);
+                    cosine = new info.debatty.java.stringsimilarity.Cosine(n);
+                } else {
+                    return ValueOrError.Error;
+                }
                 cosine = new info.debatty.java.stringsimilarity.Cosine();
             }
             return ValueOrError.Double.of(cosine.similarity(string1, string2));

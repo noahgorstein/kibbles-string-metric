@@ -24,7 +24,7 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
 
             final Value aValue = aResult.next().value("dist").get();
 
-            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(.025925);
+            assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.025925934);
             assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
         }
     }
@@ -41,7 +41,7 @@ public class TestJaroWinklerDistance extends AbstractStardogTest {
 
         final Value aValue = aResult.next().value("distance").get();
 
-        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.025925);
+        assertThat(Literal.doubleValue((Literal)aValue)).isEqualTo(0.025925934);
         assertThat(aResult).isExhausted().withFailMessage("Should have no more results");
     }
 
