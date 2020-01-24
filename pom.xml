@@ -168,7 +168,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12.4</version>
                 <configuration>
-                    <argLine>-Djava.library.path=${env.STARDOG}/lib</argLine>
+                    <argLine>-Djava.library.path=${env.STARDOG_LIB}</argLine>
                     <includes>
                         <include>**/StringMetricTestSuite.java</include>
                     </includes>

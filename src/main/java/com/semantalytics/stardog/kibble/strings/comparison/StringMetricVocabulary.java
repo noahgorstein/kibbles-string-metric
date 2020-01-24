@@ -20,7 +20,7 @@ public enum StringMetricVocabulary {
     needlemanWunch,
     ngram,
     normalizedLevenshteinDistance,
-    normalizedLevenshteinSimarity,
+    normalizedLevenshteinSimilarity,
     overlapCoefficient,
     qgram,
     sift4,
